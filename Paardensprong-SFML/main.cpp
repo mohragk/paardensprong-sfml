@@ -3,54 +3,94 @@
 #include <iostream>
 
 
-struct RenderableRectangle {
+struct Renderable {
     float x{ 0.0 }, y{ 0.0 };
-    float w{ 100 }, h{ 100.0 };
-    sf::Color color = sf::Color(sf::Color::Cyan);
+
+    virtual void paint(sf::RenderWindow& window) = 0;
 };
 
-static void renderRectangle(const RenderableRectangle& rect, sf::RenderWindow& window) {
-    sf::RectangleShape shape = sf::RectangleShape({ rect.w, rect.h });
-    shape.setFillColor(rect.color);
-    shape.setPosition(rect.x, rect.y);
-    window.draw(shape);
-}
+struct RenderableRectangle : Renderable {
+    float w{ 100 }, h{ 100.0 };
+    sf::Color color = sf::Color(sf::Color::Cyan);
 
-
-class Renderer {
-public:
-    std::vector<RenderableRectangle> rects;
-
-    sf::Font default_font;
-    sf::Text test_text;
-
-    Renderer() {
-
-
-        if (!default_font.loadFromFile("arial.ttf")) {
-            std::cout << "Loading font failed!" << "\n";
-        }
-        // Create a text
-        test_text = sf::Text("hello", default_font);
-        test_text.setCharacterSize(30);
-        test_text.setStyle(sf::Text::Bold);
-        test_text.setFillColor(sf::Color::Red);
+    void paint(sf::RenderWindow& window) {
+        sf::RectangleShape shape = sf::RectangleShape({ w, h });
+        shape.setFillColor(color);
+        shape.setPosition(x, y);
+        window.draw(shape);
     }
+};
+
+struct RenderableText : Renderable {
+    float text_size{ 30.0 };
+    sf::String text = "";
+    sf::Font font;
+    sf::Color color = sf::Color(sf::Color::Black);
+
+    void paint(sf::RenderWindow& window) override {
+        sf::Text sf_text(text, font, text_size);
+        sf_text.setFillColor(color);
+        sf_text.setPosition({ x, y });
+        window.draw(sf_text);
+    }
+};
+
+
+
+
+namespace Renderer {
+
+   
+    std::vector<Renderable*> renderables = std::vector<Renderable*>();
+
     
 
-    void render(sf::RenderWindow &window) {
-        for (RenderableRectangle& rect : rects) {
-            renderRectangle(rect, window);
-        }
+    sf::Font getDefaultFont() {
+        sf::Font default_font;
+        default_font.loadFromFile("C:/dev/paardensprong-sfml/Paardensprong-SFML/x64/Debug/arial.ttf");
 
-
-       
-       
-        window.draw(test_text);
+        return default_font;
+    }
+    
+    inline void renderRectangle(const RenderableRectangle& rect, sf::RenderWindow& window) {
+        
     }
 
-    void addRectangle(RenderableRectangle rect) {
-        rects.push_back(rect);
+
+    inline void renderText(const RenderableText& text, sf::RenderWindow& window) {
+       
+    }
+
+
+    static void render(sf::RenderWindow &window) {
+        window.clear();
+
+        {
+            // draw white background
+            float w = window.getView().getSize().x;
+            float h = window.getView().getSize().y;
+            sf::RectangleShape bg = sf::RectangleShape({ w, h });
+            bg.setFillColor(sf::Color(sf::Color::White));
+            window.draw(bg);
+        }
+
+        for (Renderable *renderable : renderables) {
+            renderable->paint(window);
+        }
+
+        renderables.clear();
+
+        window.display();
+    }
+
+  
+
+    static void addRectangle(RenderableRectangle *rect) {
+        renderables.push_back(rect);
+    }
+
+    static void addText(RenderableText *text) {
+        renderables.push_back(text);
     }
 };
 
@@ -75,6 +115,7 @@ int main()
     window.setActive(true);
     window.setFramerateLimit(60);
 
+    
 
     RenderableRectangle rect;
     rect.x = 12;
@@ -83,11 +124,17 @@ int main()
     rect.h = 180;
     
 
-    Renderer renderer;
-    renderer.addRectangle(rect);
     
+    
+    RenderableText test_text;
 
-    
+    test_text.text = "hello!";
+    test_text.font = Renderer::getDefaultFont();
+    test_text.text_size = 48;
+    test_text.x = 120;
+    test_text.y = 12;
+
+   
     while (window.isOpen())
     {
         sf::Event event;
@@ -107,20 +154,9 @@ int main()
                 
         }
 
-        window.clear();
-
-        {
-
-            float w = window.getView().getSize().x;
-            float h = window.getView().getSize().y;
-            sf::RectangleShape bg = sf::RectangleShape({w, h});
-            bg.setFillColor(sf::Color(sf::Color::White));
-            window.draw(bg);
-        }
-
-        renderer.render(window);
-
-        window.display();
+        Renderer::addRectangle(&rect);
+        Renderer::addText(&test_text);
+        Renderer::render(window);
         
     }
 
