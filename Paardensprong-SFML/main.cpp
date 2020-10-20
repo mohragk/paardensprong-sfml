@@ -153,7 +153,7 @@ int main()
             }
                 
         }
-
+        
         Renderer::addRectangle(&rect);
         Renderer::addText(&test_text);
         Renderer::render(window);
