@@ -1,21 +1,55 @@
 
 #include <SFML/OpenGL.hpp>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>   
 
 #include "CellGrid.h"
 
 
+struct PaardensprongData {
+    std::string solution;
+    std::string letters[9];
+    std::vector<int> reveal_order = std::vector<int>(9);
+};
 
 
-namespace Game {
 
-    CellGrid cell_grid;
+struct Game {
+   
+    std::string word{ "asperges" };
+    PaardensprongData paardensprong = Game::generatePaardenSprong(word);
+    CellGrid cell_grid = CellGrid(paardensprong.letters);
+    
 
-    static void update() {
+    void update() {
         cell_grid.position( 120, 24 );
     }
 
-    static void render(sf::RenderWindow &window) {
+    PaardensprongData generatePaardenSprong(std::string &word) {
+        PaardensprongData data;
+        
+        toUpperCase(word);
+        data.solution = word;
+        
+        int start = getRandomIndex(word.size());
+        int direction = rand() % 2 ? 1 : -1;
+
+        int word_index = 0;
+        for (int i = start; /* no bounds */; i += (direction * 3)) {
+            // wrap index around
+            i = floorMod(i, 8);
+            data.letters[i] = word[word_index];
+            data.reveal_order[word_index] = i;
+
+            word_index++;
+            if (word_index == 8) break;
+        }
+        return data;
+        
+    }
+
+    void render(sf::RenderWindow &window) {
         window.clear();
 
         {
@@ -42,7 +76,7 @@ namespace Game {
 
 int main()
 {
-    
+    srand(time(NULL));
     sf::ContextSettings settings;
     settings.depthBits = 24;
     settings.stencilBits = 8;
@@ -56,7 +90,8 @@ int main()
     window.setActive(true);
     window.setFramerateLimit(60);
 
-    
+    Game game;
+
    
     while (window.isOpen())
     {
@@ -77,8 +112,8 @@ int main()
                 
         }
         
-        Game::update();
-        Game::render(window);
+        game.update();
+        game.render(window);
         
     }
 

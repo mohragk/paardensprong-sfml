@@ -3,6 +3,11 @@
 #include <SFML/Graphics.hpp>
 #include "CellGrid.h"
 
+#include <algorithm>
+
+
+
+
 int CellGrid::getGridIndexForLetterIndex(int letter_index)
 {
     int mapping[9]{
@@ -14,11 +19,7 @@ int CellGrid::getGridIndexForLetterIndex(int letter_index)
     return mapping[letter_index];
 }
 
-#include <algorithm>
 
-static void toUpperCase(std::string& str) {
-    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-}
 
 void CellGrid::setupGrid(std::string letters[])
 {

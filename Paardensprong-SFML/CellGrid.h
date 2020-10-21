@@ -2,13 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "util.h"
 
-static sf::Font getDefaultFont() {
-    sf::Font default_font;
-    default_font.loadFromFile("arial.ttf");
-
-    return default_font;
-}
 
 struct Cell {
     float x{ 0.0 }, y{ 0.0 };
@@ -68,10 +63,7 @@ struct CellGrid {
     float cell_size{ 96.0 };
     float size{ cell_size * dimension };
 
-    CellGrid() {
-        std::string letters[]{
-            "a", "s", "p", "e", "r", "g", "e", "s"
-        };
+    CellGrid(std::string letters[]) {
         setupGrid(letters);
     }
 
