@@ -3,14 +3,13 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>   
-
 #include "CellGrid.h"
 
 
 struct PaardensprongData {
     std::string solution;
     std::string letters[9];
-    std::vector<int> reveal_order = std::vector<int>(9);
+    std::vector<u16> reveal_order = std::vector<u16>(9);
 };
 
 
@@ -22,12 +21,12 @@ struct Game {
     CellGrid cell_grid = CellGrid(paardensprong.letters);
   
 
-    int window_dim_x = 800;
-    int window_dim_y = 600;
+    u16 window_dim_x = 800;
+    u16 window_dim_y = 600;
 
     void update() {
-        float grid_x = window_dim_x / 2.0f - cell_grid.size / 2.0f;
-        float grid_y = 0.05 * window_dim_y;
+        f32 grid_x = window_dim_x / 2.0f - cell_grid.size / 2.0f;
+        f32 grid_y = 0.05f * window_dim_y;
         cell_grid.position(grid_x, grid_y);
     }
 
@@ -37,11 +36,11 @@ struct Game {
         util::toUpperCase(word);
         data.solution = word;
         
-        int start = util::getRandomIndex(word.size());
-        int direction = rand() % 2 ? 1 : -1;
+        u16 start = util::getRandomIndex((u32) word.size());
+        i16 direction = rand() % 2 ? 1 : -1;
 
-        int word_index = 0;
-        for (int i = start; /* no bounds */; i += (direction * 3)) {
+        u16 word_index = 0;
+        for (u16 i = start; /* no bounds */; i += (direction * 3)) {
             // wrap index around
             i = util::floorMod(i, 8);
             data.letters[i] = word[word_index];
@@ -59,8 +58,8 @@ struct Game {
 
         {
             // draw white background
-            float w = window.getView().getSize().x;
-            float h = window.getView().getSize().y;
+            f32 w = window.getView().getSize().x;
+            f32 h = window.getView().getSize().y;
             sf::RectangleShape bg = sf::RectangleShape({ w, h });
             bg.setFillColor(sf::Color(sf::Color::White));
             window.draw(bg);
@@ -81,7 +80,7 @@ struct Game {
 
 int main()
 {
-    srand(time(NULL));
+    srand((u32) time(NULL));
     sf::ContextSettings settings;
     settings.depthBits = 24;
     settings.stencilBits = 8;
@@ -89,8 +88,8 @@ int main()
     settings.majorVersion = 3;
     settings.minorVersion = 0;
 
-    int window_width = 800;
-    int window_height = 600;
+    u16 window_width = 800;
+    u16 window_height = 600;
 
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Paardensprong Game", sf::Style::Default, settings );
     
@@ -113,7 +112,7 @@ int main()
             else if (event.type == sf::Event::Resized) {
                 glViewport(0, 0, event.size.width, event.size.height);
                 // Reset view
-                sf::View view = sf::View(sf::FloatRect(0.f, 0.f, event.size.width, event.size.height));
+                sf::View view = sf::View(sf::FloatRect(0.f, 0.f, (float) event.size.width, (float) event.size.height));
                 window.setView(view);
 
                 window_width = event.size.width;

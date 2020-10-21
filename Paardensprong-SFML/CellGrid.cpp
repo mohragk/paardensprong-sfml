@@ -8,9 +8,9 @@
 
 
 
-int CellGrid::getGridIndexForLetterIndex(int letter_index)
+u16 CellGrid::getGridIndexForLetterIndex(u16 letter_index)
 {
-    int mapping[9]{
+    u16 mapping[9]{
         0, 1, 2,
         5, 8, 7,
         6, 3, 4
@@ -23,8 +23,8 @@ int CellGrid::getGridIndexForLetterIndex(int letter_index)
 
 void CellGrid::setupGrid(std::string letters[])
 {
-    for (int i = 0; i < GRID_COUNT; i++) {
-        int grid_index = getGridIndexForLetterIndex(i);
+    for (u16 i = 0; i < GRID_COUNT; i++) {
+        u16 grid_index = getGridIndexForLetterIndex(i);
 
         if (grid_index == 4) {
             grid[grid_index] = Cell();
@@ -37,16 +37,16 @@ void CellGrid::setupGrid(std::string letters[])
     }
 }
 
-void CellGrid::position(float new_x, float new_y) {
+void CellGrid::position(f32 new_x, f32 new_y) {
     x = new_x;
     y = new_y;
 }
 
 void CellGrid::paint(sf::RenderWindow& window)
 {
-    int grid_index = 0;
-    for (float cell_y = y; cell_y < y + dimension * cell_size; cell_y += cell_size) {
-        for (float cell_x = x; cell_x < x + dimension * cell_size; cell_x += cell_size) {
+    u16 grid_index = 0;
+    for (f32 cell_y = y; cell_y < y + dimension * cell_size; cell_y += cell_size) {
+        for (f32 cell_x = x; cell_x < x + dimension * cell_size; cell_x += cell_size) {
             grid[grid_index].x = cell_x;
             grid[grid_index].y = cell_y;
             grid[grid_index].paint(window);
