@@ -29,16 +29,16 @@ struct Game {
     PaardensprongData generatePaardenSprong(std::string &word) {
         PaardensprongData data;
         
-        toUpperCase(word);
+        util::toUpperCase(word);
         data.solution = word;
         
-        int start = getRandomIndex(word.size());
+        int start = util::getRandomIndex(word.size());
         int direction = rand() % 2 ? 1 : -1;
 
         int word_index = 0;
         for (int i = start; /* no bounds */; i += (direction * 3)) {
             // wrap index around
-            i = floorMod(i, 8);
+            i = util::floorMod(i, 8);
             data.letters[i] = word[word_index];
             data.reveal_order[word_index] = i;
 

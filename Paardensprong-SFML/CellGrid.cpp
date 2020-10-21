@@ -31,7 +31,7 @@ void CellGrid::setupGrid(std::string letters[])
         }
         else {
             grid[grid_index] = Cell();
-            toUpperCase(letters[i]);
+            util::toUpperCase(letters[i]);
             grid[grid_index].letter = letters[i];
         }
     }

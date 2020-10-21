@@ -13,10 +13,9 @@ struct Cell {
     sf::Color bg_color{ sf::Color::Red };
     sf::Color text_color{ sf::Color::White };
 
-    sf::Font font{ getDefaultFont() };
+    sf::Font font{ util::getDefaultFont() };
 
     std::string letter{"-"};
-    sf::String countdown_str{ "00" };
 
 
 
