@@ -62,6 +62,9 @@ struct CellGrid {
     float cell_size{ 96.0 };
     float size{ cell_size * dimension };
 
+    int world_dim_w = 800;
+    int world_sim_h = 600;
+
     CellGrid(std::string letters[]) {
         setupGrid(letters);
     }

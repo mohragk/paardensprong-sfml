@@ -20,10 +20,15 @@ struct Game {
     std::string word{ "asperges" };
     PaardensprongData paardensprong = Game::generatePaardenSprong(word);
     CellGrid cell_grid = CellGrid(paardensprong.letters);
-    
+  
+
+    int window_dim_x = 800;
+    int window_dim_y = 600;
 
     void update() {
-        cell_grid.position( 120, 24 );
+        float grid_x = window_dim_x / 2.0f - cell_grid.size / 2.0f;
+        float grid_y = 0.05 * window_dim_y;
+        cell_grid.position(grid_x, grid_y);
     }
 
     PaardensprongData generatePaardenSprong(std::string &word) {
@@ -84,7 +89,10 @@ int main()
     settings.majorVersion = 3;
     settings.minorVersion = 0;
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Paardensprong Game", sf::Style::Default, settings );
+    int window_width = 800;
+    int window_height = 600;
+
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Paardensprong Game", sf::Style::Default, settings );
     
     // activate the window
     window.setActive(true);
@@ -107,11 +115,15 @@ int main()
                 // Reset view
                 sf::View view = sf::View(sf::FloatRect(0.f, 0.f, event.size.width, event.size.height));
                 window.setView(view);
-                
+
+                window_width = event.size.width;
+                window_height = event.size.height;
+
+                game.window_dim_x = window_width;
+                game.window_dim_y = window_height;
             }
                 
         }
-        
         game.update();
         game.render(window);
         
