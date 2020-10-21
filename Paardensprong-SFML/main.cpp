@@ -1,66 +1,19 @@
-#include <SFML/graphics.hpp>
+
 #include <SFML/OpenGL.hpp>
 #include <iostream>
 
+#include "CellGrid.h"
 
-struct Renderable {
-    float x{ 0.0 }, y{ 0.0 };
 
-    virtual void paint(sf::RenderWindow& window) = 0;
-};
 
-struct RenderableRectangle : Renderable {
-    float w{ 100 }, h{ 100.0 };
-    sf::Color color = sf::Color(sf::Color::Cyan);
 
-    void paint(sf::RenderWindow& window) {
-        sf::RectangleShape shape = sf::RectangleShape({ w, h });
-        shape.setFillColor(color);
-        shape.setPosition(x, y);
-        window.draw(shape);
+namespace Game {
+
+    CellGrid cell_grid;
+
+    static void update() {
+        cell_grid.position( 120, 24 );
     }
-};
-
-struct RenderableText : Renderable {
-    float text_size{ 30.0 };
-    sf::String text = "";
-    sf::Font font;
-    sf::Color color = sf::Color(sf::Color::Black);
-
-    void paint(sf::RenderWindow& window) override {
-        sf::Text sf_text(text, font, text_size);
-        sf_text.setFillColor(color);
-        sf_text.setPosition({ x, y });
-        window.draw(sf_text);
-    }
-};
-
-
-
-
-namespace Renderer {
-
-   
-    std::vector<Renderable*> renderables = std::vector<Renderable*>();
-
-    
-
-    sf::Font getDefaultFont() {
-        sf::Font default_font;
-        default_font.loadFromFile("C:/dev/paardensprong-sfml/Paardensprong-SFML/x64/Debug/arial.ttf");
-
-        return default_font;
-    }
-    
-    inline void renderRectangle(const RenderableRectangle& rect, sf::RenderWindow& window) {
-        
-    }
-
-
-    inline void renderText(const RenderableText& text, sf::RenderWindow& window) {
-       
-    }
-
 
     static void render(sf::RenderWindow &window) {
         window.clear();
@@ -74,24 +27,12 @@ namespace Renderer {
             window.draw(bg);
         }
 
-        for (Renderable *renderable : renderables) {
-            renderable->paint(window);
-        }
-
-        renderables.clear();
-
+        cell_grid.paint(window);
+        
         window.display();
     }
 
-  
-
-    static void addRectangle(RenderableRectangle *rect) {
-        renderables.push_back(rect);
-    }
-
-    static void addText(RenderableText *text) {
-        renderables.push_back(text);
-    }
+   
 };
 
 
@@ -116,24 +57,6 @@ int main()
     window.setFramerateLimit(60);
 
     
-
-    RenderableRectangle rect;
-    rect.x = 12;
-    rect.y = 24;
-    rect.w = 240;
-    rect.h = 180;
-    
-
-    
-    
-    RenderableText test_text;
-
-    test_text.text = "hello!";
-    test_text.font = Renderer::getDefaultFont();
-    test_text.text_size = 48;
-    test_text.x = 120;
-    test_text.y = 12;
-
    
     while (window.isOpen())
     {
@@ -154,9 +77,8 @@ int main()
                 
         }
         
-        Renderer::addRectangle(&rect);
-        Renderer::addText(&test_text);
-        Renderer::render(window);
+        Game::update();
+        Game::render(window);
         
     }
 
