@@ -43,12 +43,17 @@ namespace util {
         return default_font;
     }
 
+    static u16 getRandomIndex(u16 length) {
+        u16 number = rand() % length;
+        return number;
+    }
+
     static u32 getRandomIndex(u32 length) {
         u32 number = rand() % length;
         return number;
     }
 
-    static i32 floorMod(const i32& a, const i32& b) {
+    static i32 floorMod(i32 a, i32 b) {
         return (a % b + b) % b;
     }
 
@@ -63,10 +68,18 @@ namespace util {
 
     static sf::Color colorLerp(sf::Color first, sf::Color second, f32 mu) {
         u8 r = (u8) lerp(first.r, second.r, mu);
-        u8 g = (u8)lerp(first.g, second.g, mu);
-        u8 b = (u8)lerp(first.b, second.b, mu);
+        u8 g = (u8) lerp(first.g, second.g, mu);
+        u8 b = (u8) lerp(first.b, second.b, mu);
 
         return sf::Color( r, g, b );
+    }
+
+    static sf::Color colorLerp(sf::Color first, sf::Color second, f64 mu) {
+        u8 r = (u8) lerp(first.r, second.r, mu);
+        u8 g = (u8) lerp(first.g, second.g, mu);
+        u8 b = (u8) lerp(first.b, second.b, mu);
+
+        return sf::Color(r, g, b);
     }
 
     static std::string getStringFromKeyCode(const sf::Keyboard::Key& k) {

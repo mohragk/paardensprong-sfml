@@ -39,10 +39,10 @@ void CellGrid::setupGrid(std::string letters[])
     }
 }
 
-void CellGrid::resize(float new_size)
+void CellGrid::resize(f32 new_size)
 {
     size = new_size;
-    cell_size = (i32) (new_size / dimension);
+    cell_size = new_size / dimension;
 
     for (Cell& cell : grid) {
         cell.size = cell_size;

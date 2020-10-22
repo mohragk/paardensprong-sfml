@@ -57,7 +57,7 @@ int main()
                 window_height = min_height;
             }
             else if (event.type == sf::Event::MouseMoved) {
-                sf::Cursor *cur  = game.getMouseCursorForPosition(event.mouseMove.x, event.mouseMove.y);
+                sf::Cursor *cur  = game.getMouseCursorForPosition((f32)event.mouseMove.x, (f32)event.mouseMove.y);
                 window.setMouseCursor(*cur);
             }
             else if (event.type == sf::Event::MouseButtonPressed) {

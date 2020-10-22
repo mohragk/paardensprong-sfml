@@ -57,7 +57,7 @@ struct Cell {
         }
 
         {
-            u16 text_size = (u16)real_size - (real_size / 3);
+            u16 text_size = u16(real_size - (real_size / 3.0f));
             sf::Text text_shape = sf::Text(letter, font, text_size);
             text_shape.setStyle(sf::Text::Bold);
 

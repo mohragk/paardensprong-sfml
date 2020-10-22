@@ -30,7 +30,7 @@ void TextField::paint(sf::RenderWindow& window)
         sf::RectangleShape cursor_rect = sf::RectangleShape({ 2, (f32)text_size });
         
         // animate cursor
-        f32 color_mu = (std::sin(phase * 2.0 * PI) + 1.0) / 2.0;
+        f32 color_mu = f32( ( std::sin(phase * 2.0 * PI) + 1.0) / 2.0 );
        
         sf::Color cursor_color = util::colorLerp(sf::Color(sf::Color::White), sf::Color(sf::Color::Black), color_mu);
         cursor_rect.setFillColor(cursor_color);
@@ -87,7 +87,7 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
 
         // clamp cursor
         if (cursor_index < 0) cursor_index = 0;
-        if (cursor_index > user_input.size()) cursor_index = user_input.size();
+        if (cursor_index > user_input.size()) cursor_index = i16( user_input.size() );
 	}
 
 	

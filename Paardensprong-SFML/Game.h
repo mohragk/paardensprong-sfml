@@ -82,7 +82,7 @@ struct Game : public TextFieldListener {
 
     void mousePressed(sf::Event::MouseButtonEvent& e) {
         if (solved) {
-            bool inside = cell_grid.inBounds(e.x, e.y);
+            bool inside = cell_grid.inBounds( (f32)e.x, (f32)e.y);
             if (inside) {
                 reset();
             }
@@ -146,7 +146,7 @@ struct Game : public TextFieldListener {
 
     void shuffleWordlist(std::vector<std::string>& list) {
         // obtain a time-based seed:
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        u32 seed = (u32) std::chrono::system_clock::now().time_since_epoch().count();
         std::default_random_engine e(seed);
         std::shuffle(std::begin(list), std::end(list), e);
     }
@@ -156,7 +156,7 @@ struct Game : public TextFieldListener {
             solved = true;
             
             user_input_field.disable(true);
-            cell_grid.reveal(0.6, paardensprong.reveal_order);
+            cell_grid.reveal(0.6f, paardensprong.reveal_order);
             total_score += word_score;
         }
     }
@@ -208,7 +208,8 @@ struct Game : public TextFieldListener {
         f32 user_input_x = cell_grid.x + cell_grid.grid[0].border_width;
         f32 user_input_y = cell_grid.y + cell_grid.size + 48;
         user_input_field.position(user_input_x, user_input_y);
-        user_input_field.resizeText(cell_grid.size / 6);
+        u32 user_input_text_size = u32(cell_grid.size / 6);
+        user_input_field.resizeText( user_input_text_size );
         user_input_field.update(dt);
 
        
@@ -237,7 +238,8 @@ struct Game : public TextFieldListener {
 
         // render total score
         std::string score = std::to_string(total_score);
-        sf::Text score_text = sf::Text(score, score_font, cell_grid.size / 6);
+        u32 score_text_size = u32(cell_grid.size / 6.0f);
+        sf::Text score_text = sf::Text(score, score_font, score_text_size);
         score_text.setFillColor(sf::Color(sf::Color::Black));
         score_text.setPosition(48, 48);
         window.draw(score_text);
