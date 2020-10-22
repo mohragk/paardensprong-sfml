@@ -37,7 +37,7 @@ struct Game : public TextFieldListener {
 
     f32 score_time_millis{ 0.0f };
     i32 total_score{ 0 };
-    const i32 max_word_score{ 60 };
+    const i32 max_word_score{ 30 };
     i32 word_score{ max_word_score };
     sf::Font score_font{ util::getDefaultFont() };
 
@@ -194,12 +194,12 @@ struct Game : public TextFieldListener {
     void handleWinState() {
         if (!solved) {
             solved = true;
-            
-            sound_bank["counter_bell.wav"].play();
-
+            total_score += word_score;
+           
             user_input_field.disable(true);
             cell_grid.reveal(0.6f, paardensprong.reveal_order);
-            total_score += word_score;
+
+            sound_bank["counter_bell.wav"].play();
         }
     }
 

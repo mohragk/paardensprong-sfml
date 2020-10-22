@@ -64,14 +64,16 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
         else if (e.code == sf::Keyboard::Backspace) {
             if (!user_input.size()) return;
 
-            u16 erase_index = cursor_index - 1;
+            i16 erase_index = cursor_index - 1;
             if (erase_index >= 0) {
                 user_input.erase(erase_index, 1);
                 cursor_index--;
             }
         }
         else if (e.code == sf::Keyboard::Delete) {
-            u16 erase_index = cursor_index;
+            if (!user_input.size()) return;
+
+            i16 erase_index = cursor_index;
             if (erase_index >= 0 && erase_index < user_input.size()) {
                 user_input.erase(erase_index, 1);
             }
