@@ -5,7 +5,9 @@
 #include "CellGrid.h"
 #include "TextField.h"
 
-
+#include <SFML/Audio.hpp>
+#include <unordered_map>
+#include "LoadedSound.h"
 
 struct PaardensprongData {
     std::string solution;
@@ -15,9 +17,12 @@ struct PaardensprongData {
 
 
 
+
 struct Game : public TextFieldListener {
     u16 window_dim_x{ 800 };
     u16 window_dim_y{ 600 };
+    
+    std::unordered_map<std::string, LoadedSound> sound_bank;
 
     CellGrid cell_grid;
     TextField user_input_field;
@@ -36,7 +41,22 @@ struct Game : public TextFieldListener {
     i32 word_score{ max_word_score };
     sf::Font score_font{ util::getDefaultFont() };
 
+      
     Game() {
+        for (int i = 1; i <= 5; i++) {
+            std::string num = std::to_string(i);
+            addSound("keyboard_0" + num + "_pressed.wav");
+            addSound("keyboard_0" + num + "_released.wav");
+        }
+
+        for (int i = 1; i <= 4; i++) {
+            std::string num = std::to_string(i);
+            addSound("horse_gallop_0" + num + ".wav");
+        }
+        
+        addSound("clock_tick.wav");
+        addSound("counter_bell.wav");
+
         word_list = retrieveWordlist();
         shuffleWordlist(word_list);
         user_input_field.addListener(this);
@@ -47,7 +67,10 @@ struct Game : public TextFieldListener {
         reset();
     }
 
-
+    void addSound(std::string url) {
+        sound_bank.insert({ url, LoadedSound() });
+        sound_bank[url].load(url);
+    }
 
     
     void reset() {
@@ -58,18 +81,20 @@ struct Game : public TextFieldListener {
         
         
         paardensprong = generatePaardenSprong(word_list[word_index++]);
-        
         cell_grid = CellGrid();
+        cell_grid.sound_bank = &sound_bank;
         cell_grid.setupGrid(paardensprong.letters);
 
         user_input_field.disable(false);
         user_input_field.reset();
 
-        //std::cout << paardensprong.solution << "\n";
     }
 
     void keyPressed(sf::Event::KeyEvent& e) {
+        
+        std::string index = std::to_string( util::getRandomIndex(4) + 1);
 
+        sound_bank["keyboard_0"+index+"_pressed.wav"].play();
         if (e.code == sf::Keyboard::Enter) {
             if (solved) {
                 reset();
@@ -78,6 +103,12 @@ struct Game : public TextFieldListener {
         }
         
         user_input_field.keyPressed(e);
+    }
+
+    void keyReleased(sf::Event::KeyEvent& e) {
+        std::string index = std::to_string(util::getRandomIndex(4) + 1);
+
+        sound_bank["keyboard_0" + index + "_released.wav"].play();
     }
 
     void mousePressed(sf::Event::MouseButtonEvent& e) {
@@ -155,6 +186,8 @@ struct Game : public TextFieldListener {
         if (!solved) {
             solved = true;
             
+            sound_bank["counter_bell.wav"].play();
+
             user_input_field.disable(true);
             cell_grid.reveal(0.6f, paardensprong.reveal_order);
             total_score += word_score;
@@ -187,6 +220,7 @@ struct Game : public TextFieldListener {
 
                 if (word_score == 0) {
                     total_score--;
+                    sound_bank["clock_tick.wav"].play();
                 }
             }
 

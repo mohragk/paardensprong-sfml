@@ -58,7 +58,9 @@ int main()
             }
             else if (event.type == sf::Event::MouseMoved) {
                 sf::Cursor *cur  = game.getMouseCursorForPosition((f32)event.mouseMove.x, (f32)event.mouseMove.y);
-                window.setMouseCursor(*cur);
+                if (cur != nullptr) {
+                    window.setMouseCursor(*cur);
+                }
             }
             else if (event.type == sf::Event::MouseButtonPressed) {
                 game.mousePressed(event.mouseButton);
@@ -71,6 +73,9 @@ int main()
                 else {
                     game.keyPressed(event.key);
                 }
+            }
+            else if (event.type == sf::Event::KeyReleased) {
+                game.keyReleased(event.key);
             }
                 
         }

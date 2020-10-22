@@ -26,7 +26,7 @@ void CellGrid::setupGrid(std::string letters[])
     for (u16 i = 0; i < GRID_COUNT; i++) {
         u16 grid_index = getGridIndexForLetterIndex(i);
 
-        if (grid_index == 4) {
+        if (grid_index == MIDDLE_CELL) {
             grid[grid_index] = Cell();
             grid[grid_index].orig_color = sf::Color(sf::Color::White);
             grid[grid_index].text_color = sf::Color(sf::Color::Red);
@@ -57,11 +57,17 @@ void CellGrid::position(f32 new_x, f32 new_y) {
 
 void CellGrid::update(f32 dt)
 {
-    for (Cell& cell : grid) {
-        cell.update(dt);
+    u16 grid_index = 0;
+    for (f32 cell_y = y; cell_y < y + dimension * cell_size; cell_y += cell_size) {
+        for (f32 cell_x = x; cell_x < x + dimension * cell_size; cell_x += cell_size) {
+            grid[grid_index].x = cell_x;
+            grid[grid_index].y = cell_y;
+            grid[grid_index].update(dt);
+            grid_index++;
+        }
     }
 
-    if (should_reveal && reveal_order_index < reveal_order.size()) {
+    if (should_reveal && reveal_order_index < reveal_order.size() - 1) {
         reveal_time += dt;
 
         if (reveal_time >= reveal_duration) {
@@ -69,6 +75,9 @@ void CellGrid::update(f32 dt)
             int letter_index = reveal_order[reveal_order_index++];
             int grid_index = getGridIndexForLetterIndex(letter_index);
             grid[grid_index].reveal(0.5f);
+
+            std::string num = std::to_string(util::getRandomIndex(4) + 1);
+            sound_bank->at("horse_gallop_0"+num+".wav").play();
         }
     }
 
@@ -77,7 +86,7 @@ void CellGrid::update(f32 dt)
 void CellGrid::updateWordScore(i32 score)
 {
     std::string score_str = std::to_string(score);
-    grid[4].letter = score_str;
+    grid[MIDDLE_CELL].letter = score_str;
 
 }
 
@@ -91,13 +100,7 @@ void CellGrid::reveal(const f32 duration, std::vector<u16>& new_reveal_order)
 
 void CellGrid::paint(sf::RenderWindow& window)
 {
-    u16 grid_index = 0;
-    for (f32 cell_y = y; cell_y < y + dimension * cell_size; cell_y += cell_size) {
-        for (f32 cell_x = x; cell_x < x + dimension * cell_size; cell_x += cell_size) {
-            grid[grid_index].x = cell_x;
-            grid[grid_index].y = cell_y;
-            grid[grid_index].paint(window);
-            grid_index++;
-        }
+    for (Cell& cell : grid) {
+        cell.paint(window);
     }
 }

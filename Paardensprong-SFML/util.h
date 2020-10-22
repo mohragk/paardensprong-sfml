@@ -43,15 +43,12 @@ namespace util {
         return default_font;
     }
 
-    static u16 getRandomIndex(u16 length) {
-        u16 number = rand() % length;
+    static int getRandomIndex(int length) {
+        int number = rand() % length;
         return number;
     }
 
-    static u32 getRandomIndex(u32 length) {
-        u32 number = rand() % length;
-        return number;
-    }
+
 
     static i32 floorMod(i32 a, i32 b) {
         return (a % b + b) % b;

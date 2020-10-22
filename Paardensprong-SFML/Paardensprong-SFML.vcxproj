@@ -27,6 +27,8 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CellGrid.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="LoadedSound.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="TextField.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>

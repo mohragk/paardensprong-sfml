@@ -4,9 +4,13 @@
 #include "util.h"
 
 #include "Cell.h"
+#include "LoadedSound.h"
+#include <unordered_map>
+
 
 struct CellGrid {
     static constexpr u32 GRID_COUNT{ 9 };
+    static constexpr u16 MIDDLE_CELL{ 4 };
     std::vector<Cell> grid = std::vector<Cell>(GRID_COUNT);
 
     f32 x{ 0.0 }, y{ 0.0 };
@@ -22,6 +26,9 @@ struct CellGrid {
     f32 reveal_time{ 0.0f };
     f32 reveal_duration{ 0.0f };
     u32 reveal_order_index{ 0 };
+
+
+    std::unordered_map<std::string, LoadedSound>  *sound_bank;
 
     u16 getGridIndexForLetterIndex(u16 letter_index);
 
