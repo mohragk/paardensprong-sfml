@@ -23,12 +23,14 @@ struct Game : public TextFieldListener {
     TextField user_input_field;
     PaardensprongData paardensprong;
     
+    u32 word_index = 0;
     std::vector<std::string> word_list;
 
     bool solved{ false };
     u32 game_round{ 0 };
     sf::Cursor hand_cursor, arrow_cursor;
 
+    f32 score_time_millis{ 0.0f };
     i32 total_score{ 0 };
     const i32 max_word_score{ 60 };
     i32 word_score{ max_word_score };
@@ -47,24 +49,36 @@ struct Game : public TextFieldListener {
 
 
 
-    u32 word_index = 0;
+    
     void reset() {
         solved = false;
+        score_time_millis = 0.0f;
+        game_round++;
         word_score = max_word_score;
-        frame_count = 0;
-
+        
+        
         paardensprong = generatePaardenSprong(word_list[word_index++]);
+        
         cell_grid = CellGrid();
         cell_grid.setupGrid(paardensprong.letters);
-        game_round++;
 
         user_input_field.disable(false);
         user_input_field.reset();
 
-        std::cout << paardensprong.solution << "\n";
+        //std::cout << paardensprong.solution << "\n";
     }
 
-   
+    void keyPressed(sf::Event::KeyEvent& e) {
+
+        if (e.code == sf::Keyboard::Enter) {
+            if (solved) {
+                reset();
+                return;
+            }
+        }
+        
+        user_input_field.keyPressed(e);
+    }
 
     void mousePressed(sf::Event::MouseButtonEvent& e) {
         if (solved) {
@@ -140,6 +154,7 @@ struct Game : public TextFieldListener {
     void handleWinState() {
         if (!solved) {
             solved = true;
+            
             user_input_field.disable(true);
             cell_grid.reveal(0.6, paardensprong.reveal_order);
             total_score += word_score;
@@ -155,31 +170,27 @@ struct Game : public TextFieldListener {
     }
 
 
-    u32 frame_count{ 0 };
-    f32 score_time_second{ 0.0f };
+   
     void update(f32 dt) {
        
-        score_time_second += dt;
 
         // update scores
         if (!solved) {
+            score_time_millis += dt;
 
-            if (score_time_second >= 1000.0f) {
-                score_time_second = 0.0f;
+            f32 one_second = 1000.0f;
+
+            if (score_time_millis >= one_second) {
+                score_time_millis = 0.0f;
                 word_score--;
                 if (word_score < 0) word_score = 0;
 
                 if (word_score == 0) {
                     total_score--;
                 }
-
             }
 
-            if (frame_count % 60 == 0) { // 1 second elapsed
-                
-            }
         }
-        frame_count++;
 
         // update grid
         cell_grid.update(dt);
@@ -226,7 +237,7 @@ struct Game : public TextFieldListener {
 
         // render total score
         std::string score = std::to_string(total_score);
-        sf::Text score_text = sf::Text(score, score_font, 48);
+        sf::Text score_text = sf::Text(score, score_font, cell_grid.size / 6);
         score_text.setFillColor(sf::Color(sf::Color::Black));
         score_text.setPosition(48, 48);
         window.draw(score_text);

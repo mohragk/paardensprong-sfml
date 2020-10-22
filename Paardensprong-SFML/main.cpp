@@ -69,7 +69,8 @@ int main()
                     return 0;
                 }
                 else {
-                    game.user_input_field.keyPressed(event.key);
+                    game.keyPressed(event.key);
+                    //game.user_input_field.keyPressed(event.key);
                 }
             }
                 

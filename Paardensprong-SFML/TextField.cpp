@@ -46,6 +46,7 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
 {
     if (disabled) return;
 
+    time_millis = 0.0f;
 
 	std::string input = util::getStringFromKeyCode(e.code);
 	if (input != "") {
