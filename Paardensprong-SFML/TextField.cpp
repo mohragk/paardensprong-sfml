@@ -45,21 +45,21 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
     if (disabled) return;
 
     time_millis = 0.0f;
-
+    
 	std::string input = util::getStringFromKeyCode(e.code);
 	if (input != "") {
         
 		user_input.insert(cursor_index, input);
 		cursor_index++;
 	}
-	else {
+    else {
         if (e.code == sf::Keyboard::Left) {
             cursor_index--;
-           
+
         }
         else if (e.code == sf::Keyboard::Right) {
             cursor_index++;
-           
+
         }
         else if (e.code == sf::Keyboard::Backspace) {
             if (!user_input.size()) return;
@@ -78,12 +78,27 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
                 user_input.erase(erase_index, 1);
             }
         }
+        else if (e.code == sf::Keyboard::Home) {
+            cursor_index = 0;
+        }
+        else if (e.code == sf::Keyboard::End) {
+            cursor_index = user_input.size();
+        }
         else if (e.code == sf::Keyboard::Enter) {
             for (TextFieldListener* listener : listeners) {
                 listener->actionPerformed(user_input);
             }
         }
 
+
+        if (e.control) {
+            if (e.code == sf::Keyboard::Left) {
+                cursor_index = 0;
+            }
+            else if (e.code == sf::Keyboard::Right) {
+                cursor_index = user_input.size();
+            }
+        }
 
         // clamp cursor
         if (cursor_index < 0) cursor_index = 0;

@@ -8,7 +8,7 @@ struct Cell {
     f32 size{ 96.0 };
     f32 border_width = size / 12;
 
-    sf::Color orig_color{ sf::Color::Red };
+    sf::Color orig_color{ util::getStandardBackgroundColor() };
     sf::Color reveal_color{ sf::Color::Black };
     sf::Color text_color{ sf::Color::White };
 

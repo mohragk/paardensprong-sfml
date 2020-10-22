@@ -17,12 +17,20 @@ int main()
     settings.antialiasingLevel = 4;
     settings.majorVersion = 3;
     settings.minorVersion = 0;
-
+    std::string window_title = "Paardensprong Game";
     u16 window_width = 1024;
     u16 window_height = 768;
+    u16 prev_window_width = window_width;
+    u16 prev_window_height = window_height;
+    u16 prev_window_pos_x{ 0 };
+    u16 prev_window_pos_y{ 0 };
 
-    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Paardensprong Game", sf::Style::Default, settings );
-    
+    bool is_fullscreen{ false };
+
+
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height), window_title, sf::Style::Default, settings );
+    prev_window_pos_x = window.getPosition().x;
+    prev_window_pos_y = window.getPosition().y;
     // activate the window
     window.setActive(true);
     window.setFramerateLimit(60);
@@ -30,6 +38,7 @@ int main()
 
     // create the game
     Game game;
+    game.window = &window;
 
     sf::Clock clock;
     sf::Time prev_time;
@@ -42,7 +51,6 @@ int main()
         {
             if (event.type == sf::Event::Closed) {
                 window.close();
-               
             }
             else if (event.type == sf::Event::Resized) {
 
@@ -61,6 +69,8 @@ int main()
                 if (cur != nullptr) {
                     window.setMouseCursor(*cur);
                 }
+
+                game.mouseMoved(event.mouseMove);
             }
             else if (event.type == sf::Event::MouseButtonPressed) {
                 game.mousePressed(event.mouseButton);
@@ -70,6 +80,33 @@ int main()
                     window.close();
                     return 0;
                 }
+
+                else if (event.key.code == sf::Keyboard::F11) {
+                    is_fullscreen = !is_fullscreen;
+                    if (is_fullscreen) {
+                        std::cout << "displaying in full screen borderless\n";
+
+                        prev_window_width = window.getSize().x;
+                        prev_window_height = window.getSize().y;
+                        prev_window_pos_x = window.getPosition().x;
+                        prev_window_pos_y = window.getPosition().y;
+
+                        window.create(sf::VideoMode::getDesktopMode(), window_title, sf::Style::None, settings);
+                        window.setPosition({ 0,0 });
+                       
+
+                    }
+                    else {
+                        //assert(prev_window_width != -1);
+                        
+                        window.create(sf::VideoMode(prev_window_width, prev_window_height), window_title, sf::Style::Default, settings);
+                        window.setPosition(sf::Vector2i(prev_window_pos_x, prev_window_pos_y));
+                    }
+                    window_width = window.getSize().x;
+                    window_height = window.getSize().y;
+
+                }
+
                 else {
                     game.keyPressed(event.key);
                 }

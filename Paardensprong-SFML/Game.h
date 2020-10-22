@@ -21,6 +21,8 @@ struct PaardensprongData {
 struct Game : public TextFieldListener {
     u16 window_dim_x{ 800 };
     u16 window_dim_y{ 600 };
+
+    sf::RenderWindow* window;
     
     std::unordered_map<std::string, LoadedSound> sound_bank;
 
@@ -93,6 +95,10 @@ struct Game : public TextFieldListener {
 
     void keyPressed(sf::Event::KeyEvent& e) {
         
+        if (window != nullptr) {
+            window->setMouseCursorVisible(false);
+        }
+
         if (e.code == sf::Keyboard::Enter) {
             sound_bank["keyboard_enter_pressed.wav"].play();
             if (solved) {
@@ -117,6 +123,14 @@ struct Game : public TextFieldListener {
         else {
             std::string num = std::to_string(util::getRandomIndex(4) + 1);
             sound_bank["keyboard_0" + num + "_released.wav"].play();
+        }
+    }
+
+    void mouseMoved(sf::Event::MouseMoveEvent& e) {
+        if (window != nullptr) {
+            window->setMouseCursorVisible(true);
+            sf::Cursor *cursor = getMouseCursorForPosition((f32)e.x, (f32)e.y);
+            window->setMouseCursor(*cursor);
         }
     }
 

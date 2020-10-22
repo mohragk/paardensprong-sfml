@@ -79,6 +79,11 @@ namespace util {
         return sf::Color(r, g, b);
     }
 
+    static sf::Color getStandardBackgroundColor() {
+        sf::Color standard_bg_color = sf::Color(200, 12, 12);
+        return standard_bg_color;
+    }
+
     static std::string getStringFromKeyCode(const sf::Keyboard::Key& k) {
         
         
