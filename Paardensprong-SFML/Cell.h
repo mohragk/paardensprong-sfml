@@ -8,9 +8,10 @@ struct Cell {
     f32 size{ 96.0 };
     f32 border_width = size / 12;
 
-    sf::Color orig_color{ util::getStandardBackgroundColor() };
-    sf::Color reveal_color{ sf::Color::Black };
-    sf::Color text_color{ sf::Color::White };
+    sf::Color orig_color{ util::getCellOrigColor() };
+    sf::Color reveal_color{ util::getCellRevealColor() };
+    sf::Color text_color{ util::getCellTextColor() };
+    sf::Color text_reveal_color{ util::getCellTextRevealColor() };
 
     f32 time_millis{ 0.0f };
     f32 reveal_duration{ 500.0f };
@@ -47,6 +48,7 @@ struct Cell {
         f32 real_x = x + border_width;
         f32 real_y = y + border_width;
 
+        // draw background
         {
             sf::Color bg_color = util::colorLerp(orig_color, reveal_color, color_mu);
             sf::RectangleShape shape = sf::RectangleShape({ real_size, real_size });
@@ -55,6 +57,7 @@ struct Cell {
             window.draw(shape);
         }
 
+        // draw leter
         {
             u16 text_size = u16(real_size - (real_size / 3.0f));
             sf::Text text_shape = sf::Text(letter, font, text_size);
@@ -69,7 +72,9 @@ struct Cell {
             f32 center_x = real_x + (real_size / 2.0f);
             f32 center_y = real_y + (real_size / 2.0f);
 
-            text_shape.setFillColor(text_color);
+            sf::Color letter_color = util::colorLerp(text_color, text_reveal_color , color_mu);
+
+            text_shape.setFillColor(letter_color);
             text_shape.setPosition(center_x, center_y);
             window.draw(text_shape);
         }

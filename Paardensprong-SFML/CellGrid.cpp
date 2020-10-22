@@ -28,8 +28,8 @@ void CellGrid::setupGrid(std::string letters[])
 
         if (grid_index == MIDDLE_CELL) {
             grid[grid_index] = Cell();
-            grid[grid_index].orig_color = sf::Color(sf::Color::White);
-            grid[grid_index].text_color = sf::Color(sf::Color::Red);
+            grid[grid_index].orig_color = util::getStandardBackgroundColor();
+            grid[grid_index].text_color = util::getCellOrigColor();
         }
         else {
             grid[grid_index] = Cell();

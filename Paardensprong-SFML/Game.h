@@ -38,6 +38,9 @@ struct Game : public TextFieldListener {
     sf::Cursor hand_cursor, arrow_cursor;
 
     f32 score_time_millis{ 0.0f };
+    f32 solve_time{ 0.0f };
+    std::vector<f32> solve_times = std::vector<f32>();
+    f32 avg_solve_time{ 0.0f };
     i32 total_score{ 0 };
     const i32 max_word_score{ 30 };
     i32 word_score{ max_word_score };
@@ -209,7 +212,16 @@ struct Game : public TextFieldListener {
         if (!solved) {
             solved = true;
             total_score += word_score;
+            solve_times.push_back(solve_time);
            
+            
+            f32 total_solve_time{ 0.0f };
+            for (const f32 &time : solve_times) {
+                total_solve_time += time;
+            }
+            avg_solve_time = (total_solve_time) / game_round;
+            solve_time = 0.0f;
+
             user_input_field.disable(true);
             cell_grid.reveal(0.6f, paardensprong.reveal_order);
 
@@ -233,6 +245,8 @@ struct Game : public TextFieldListener {
         // update scores
         if (!solved) {
             score_time_millis += dt;
+
+            solve_time += dt;
 
             f32 one_second = 1000.0f;
 
@@ -282,7 +296,7 @@ struct Game : public TextFieldListener {
             f32 w = window.getView().getSize().x;
             f32 h = window.getView().getSize().y;
             sf::RectangleShape bg = sf::RectangleShape({ w, h });
-            bg.setFillColor(sf::Color(sf::Color::White));
+            bg.setFillColor(util::getStandardBackgroundColor());
             window.draw(bg);
         }
 
@@ -297,9 +311,38 @@ struct Game : public TextFieldListener {
         std::string score = std::to_string(total_score);
         u32 score_text_size = u32(cell_grid.size / 6.0f);
         sf::Text score_text = sf::Text(score, score_font, score_text_size);
-        score_text.setFillColor(sf::Color(sf::Color::Black));
+        score_text.setFillColor(sf::Color(util::getTextColor()));
         score_text.setPosition(48, 48);
         window.draw(score_text);
+
+       
+
+
+        // render avg solve time
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(2) << (avg_solve_time / 1000.0f);
+        std::string mystring = ss.str();
+        std::string solve_time_str = ss.str();
+        sf::Text solve_time_text_shape = sf::Text(solve_time_str, score_font, score_text_size);
+        
+        f32 solve_time_x = window.getSize().x - 48.0f;
+        f32 solve_time_y = 48.0f;
+
+        sf::FloatRect bounds = solve_time_text_shape.getLocalBounds();
+        f32 origin_x = bounds.left + bounds.width;
+        f32 origin_y = solve_time_text_shape.getOrigin().y;
+
+        solve_time_text_shape.setOrigin(origin_x, origin_y);
+        solve_time_text_shape.setPosition({ solve_time_x, solve_time_y });
+        
+
+        solve_time_text_shape.setFillColor(util::getTextColor());
+        window.draw(solve_time_text_shape);
+
+
+
+
+
 
         window.display();
     }

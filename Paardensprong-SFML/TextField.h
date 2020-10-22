@@ -15,10 +15,12 @@ public:
 struct TextField {
 	std::vector<TextFieldListener *> listeners = std::vector<TextFieldListener *>();
 	f32 x{ 100.0f }, y{ 100.0f };
+	u16 max_input_length{ 20 };
 
 	u32 text_size{ 28 };
 	sf::Font font{ util::getDefaultFont() };
-	sf::Color text_color{ sf::Color(sf::Color::Black) };
+	sf::Color text_color{ util::getTextColor() };
+	sf::Color selection_color{ util::getInputSelectionColor() };
 
 	f64 phase = 0.0;
 	f32 time_millis{ 0.0f };
@@ -26,8 +28,10 @@ struct TextField {
 
 	std::string user_input{""};
 	i16 cursor_index{ 0 };
+	i16 selection_cursor_index{ 0 };
 
 	bool disabled{ false };
+	bool selecting{ false };
 
 	void position(f32 new_x, f32 new_y) {
 		x = new_x;

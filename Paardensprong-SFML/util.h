@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 #include <regex>
 #include <string>
 #include <vector>
@@ -79,9 +80,43 @@ namespace util {
         return sf::Color(r, g, b);
     }
 
+    static sf::Color main_color = sf::Color(54, 80, 115);
+
     static sf::Color getStandardBackgroundColor() {
-        sf::Color standard_bg_color = sf::Color(200, 12, 12);
-        return standard_bg_color;
+        return main_color;
+        
+    }
+
+    static sf::Color getCellOrigColor() {
+        return sf::Color::White;
+    }
+
+    static sf::Color getCellRevealColor() {
+        return sf::Color::Black;
+    }
+
+    static sf::Color getCellTextColor() {
+        return sf::Color::Black;
+    }
+
+    static sf::Color getCellTextRevealColor() {
+        return main_color;
+    }
+
+    static sf::Color getTextColor() {
+        return sf::Color::White;
+    }
+
+    static sf::Color getInvalidTextColor() {
+        return sf::Color(147, 180, 191);
+    }
+
+    static sf::Color getInputDisabledTextColor() {
+        return sf::Color::White;
+    }
+
+    static sf::Color getInputSelectionColor() {
+        return sf::Color(119, 150, 189);
     }
 
     static std::string getStringFromKeyCode(const sf::Keyboard::Key& k) {
