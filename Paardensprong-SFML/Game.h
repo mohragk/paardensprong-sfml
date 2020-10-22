@@ -161,7 +161,7 @@ struct Game : public TextFieldListener {
         }
     }
 
-    void messageReceived(const std::string& message) override {
+    void actionPerformed(const std::string& message) override {
         std::string answer = message;
         util::toUpperCase(answer);
         if (answer == paardensprong.solution) {

@@ -3,8 +3,6 @@
 #include "TextField.h"
 
 
-
-
 void TextField::paint(sf::RenderWindow& window)
 {
     // draw user input
@@ -15,7 +13,7 @@ void TextField::paint(sf::RenderWindow& window)
     text_shape.setFillColor(text_color);
 
     if (disabled) {
-        text_shape.setFillColor(sf::Color(22, 22, 22));
+        text_shape.setFillColor(sf::Color(40, 40, 40));
     }
 
     f32 center_x = x;
@@ -80,7 +78,7 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
         }
         else if (e.code == sf::Keyboard::Enter) {
             for (TextFieldListener* listener : listeners) {
-                listener->messageReceived(user_input);
+                listener->actionPerformed(user_input);
             }
         }
 

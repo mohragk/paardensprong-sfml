@@ -70,7 +70,6 @@ int main()
                 }
                 else {
                     game.keyPressed(event.key);
-                    //game.user_input_field.keyPressed(event.key);
                 }
             }
                 
