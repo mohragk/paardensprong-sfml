@@ -53,7 +53,8 @@ struct Game : public TextFieldListener {
             std::string num = std::to_string(i);
             addSound("horse_gallop_0" + num + ".wav");
         }
-        
+        addSound("keyboard_enter_pressed.wav");
+        addSound("keyboard_enter_released.wav");
         addSound("clock_tick.wav");
         addSound("counter_bell.wav");
 
@@ -92,23 +93,31 @@ struct Game : public TextFieldListener {
 
     void keyPressed(sf::Event::KeyEvent& e) {
         
-        std::string index = std::to_string( util::getRandomIndex(4) + 1);
-
-        sound_bank["keyboard_0"+index+"_pressed.wav"].play();
         if (e.code == sf::Keyboard::Enter) {
+            sound_bank["keyboard_enter_pressed.wav"].play();
             if (solved) {
                 reset();
                 return;
             }
+        }
+        else {
+            std::string index = std::to_string(util::getRandomIndex(4) + 1);
+            sound_bank["keyboard_0" + index + "_pressed.wav"].play();
         }
         
         user_input_field.keyPressed(e);
     }
 
     void keyReleased(sf::Event::KeyEvent& e) {
-        std::string index = std::to_string(util::getRandomIndex(4) + 1);
 
-        sound_bank["keyboard_0" + index + "_released.wav"].play();
+        if (e.code == sf::Keyboard::Enter) {
+            sound_bank["keyboard_enter_released.wav"].play();
+         
+        }
+        else {
+            std::string num = std::to_string(util::getRandomIndex(4) + 1);
+            sound_bank["keyboard_0" + num + "_released.wav"].play();
+        }
     }
 
     void mousePressed(sf::Event::MouseButtonEvent& e) {
