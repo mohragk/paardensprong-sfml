@@ -18,8 +18,6 @@ struct CellGrid {
     f32 cell_size{ 96.0 };
     f32 size{ cell_size * dimension };
 
-    u32 world_dim_w{ 800 };
-    u32 world_sim_h{ 600 };
 
     std::vector<u16> reveal_order = std::vector<u16>();
     bool should_reveal{ false };
