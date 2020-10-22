@@ -38,8 +38,8 @@ struct TextField {
 
 		time_millis += dt;
 		
-		while (time_millis >= blink_duration_millis) {
-			time_millis -= dt;
+		if (time_millis >= blink_duration_millis) {
+			time_millis = 0.0f;
 		}
 		
 		phase = time_millis / blink_duration_millis;

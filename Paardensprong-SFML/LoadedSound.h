@@ -9,7 +9,7 @@ struct LoadedSound {
 
 
     void load(std::string url) {
-        if (buffer.loadFromFile("sound/" + url)) {
+        if (buffer.loadFromFile("assets/sound/" + url)) {
             name = url;
             sound = sf::Sound(buffer);
         }

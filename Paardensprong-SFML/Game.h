@@ -169,7 +169,7 @@ struct Game : public TextFieldListener {
         std::string line;
         const std::regex reg("[a-z]+");
 
-        fs.open("word_list.txt");
+        fs.open("assets/word_list.txt");
 
         if (fs.is_open()) {
             while (std::getline(fs, line)) {

@@ -38,7 +38,7 @@ namespace util {
 
     static sf::Font getDefaultFont() {
         sf::Font default_font;
-        default_font.loadFromFile("arial.ttf");
+        default_font.loadFromFile("assets/arialbd.ttf");
 
         return default_font;
     }
