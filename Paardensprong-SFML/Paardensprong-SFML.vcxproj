@@ -21,9 +21,12 @@
   <ItemGroup>
     <ClCompile Include="CellGrid.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TextField.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CellGrid.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="TextField.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -28,6 +28,8 @@ void CellGrid::setupGrid(std::string letters[])
 
         if (grid_index == 4) {
             grid[grid_index] = Cell();
+            grid[grid_index].orig_color = sf::Color(sf::Color::White);
+            grid[grid_index].text_color = sf::Color(sf::Color::Red);
         }
         else {
             grid[grid_index] = Cell();
@@ -37,9 +39,54 @@ void CellGrid::setupGrid(std::string letters[])
     }
 }
 
+void CellGrid::resize(float new_size)
+{
+    size = new_size;
+    cell_size = (i32) (new_size / dimension);
+
+    for (Cell& cell : grid) {
+        cell.size = cell_size;
+    }
+
+}
+
 void CellGrid::position(f32 new_x, f32 new_y) {
     x = new_x;
     y = new_y;
+}
+
+void CellGrid::update(f32 dt)
+{
+    for (Cell& cell : grid) {
+        cell.update(dt);
+    }
+
+    if (should_reveal && reveal_order_index < reveal_order.size()) {
+        reveal_time += dt;
+
+        if (reveal_time >= reveal_duration) {
+            reveal_time = 0.0f;
+            int letter_index = reveal_order[reveal_order_index++];
+            int grid_index = getGridIndexForLetterIndex(letter_index);
+            grid[grid_index].reveal(0.5f);
+        }
+    }
+
+}
+
+void CellGrid::updateWordScore(i32 score)
+{
+    std::string score_str = std::to_string(score);
+    grid[4].letter = score_str;
+
+}
+
+void CellGrid::reveal(const f32 duration, std::vector<u16>& new_reveal_order)
+{
+    reveal_order = new_reveal_order;
+    should_reveal = true;
+    reveal_time = 0;
+    reveal_duration = duration * 1000.0f;
 }
 
 void CellGrid::paint(sf::RenderWindow& window)
