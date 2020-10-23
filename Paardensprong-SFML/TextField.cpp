@@ -163,10 +163,6 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
             }
         }
         
-
-        
-
-        
 	}
 
     // clamp cursor

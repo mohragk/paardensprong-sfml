@@ -77,6 +77,7 @@ void CellGrid::update(f32 dt)
             grid[grid_index].reveal(0.5f);
 
             std::string num = std::to_string(util::getRandomIndex(4) + 1);
+
             sound_bank->at("horse_gallop_0"+num+".wav").play();
         }
     }
