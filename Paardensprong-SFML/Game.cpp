@@ -76,12 +76,10 @@ void Game::keyPressed(sf::Event::KeyEvent& e) {
     }
 
 
-
     if (e.code == sf::Keyboard::Enter) {
         playSound("keyboard_enter_pressed.wav");
         if (solved) {
             cueue_reset = true;
-            //reset();
             return;
         }
     }
