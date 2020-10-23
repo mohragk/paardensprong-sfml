@@ -1,9 +1,7 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include "CellGrid.h"
-
-#include <algorithm>
+#include "Game.h"
 
 
 
@@ -76,9 +74,11 @@ void CellGrid::update(f32 dt)
             int grid_index = getGridIndexForLetterIndex(letter_index);
             grid[grid_index].reveal(0.5f);
 
-            std::string num = std::to_string(util::getRandomIndex(4) + 1);
 
-            sound_bank->at("horse_gallop_0"+num+".wav").play();
+            if (game != nullptr) {
+                std::string num = std::to_string(util::getRandomIndex(4) + 1);
+                game->playSound("horse_gallop_0"+num+".wav");
+            }
         }
     }
 

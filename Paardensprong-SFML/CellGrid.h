@@ -1,12 +1,14 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <algorithm>
+
 #include "util.h"
 
 #include "Cell.h"
 #include "LoadedSound.h"
-#include <unordered_map>
 
+struct Game;
 
 struct CellGrid {
     static constexpr u32 GRID_COUNT{ 9 };
@@ -26,7 +28,9 @@ struct CellGrid {
     u32 reveal_order_index{ 0 };
 
 
-    std::unordered_map<std::string, LoadedSound>  *sound_bank;
+    Game* game;
+
+    
 
     u16 getGridIndexForLetterIndex(u16 letter_index);
 
