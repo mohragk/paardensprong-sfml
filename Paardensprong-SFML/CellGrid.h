@@ -13,7 +13,7 @@ struct CellGrid {
     static constexpr u16 MIDDLE_CELL{ 4 };
     std::vector<Cell> grid = std::vector<Cell>(GRID_COUNT);
 
-    f32 x{ 0.0 }, y{ 0.0 };
+    f32 x{ -10000.0 }, y{ -10000.0 };
     f32 dimension{ 3.0 };
     f32 cell_size{ 96.0 };
     f32 size{ cell_size * dimension };

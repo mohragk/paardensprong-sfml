@@ -4,7 +4,7 @@
 #include "util.h"
 
 struct Cell {
-    f32 x{ 0.0 }, y{ 0.0 };
+    f32 x{ -10000.0 }, y{ -10000.0 };
     f32 size{ 96.0 };
     f32 border_width = size / 12;
 

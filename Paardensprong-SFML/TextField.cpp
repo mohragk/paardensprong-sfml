@@ -86,11 +86,11 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
 
     time_millis = 0.0f;
     
-	std::string input = util::getStringFromKeyCode(e.code);
-	if (input != "") {
+	std::string character_input = util::getStringFromKeyCode(e.code);
+	if (character_input != "") {
         
         if (user_input.size() < max_input_length) {
-            user_input.insert(cursor_index, input);
+            user_input.insert(cursor_index, character_input);
             cursor_index++;
         }
 		
@@ -119,6 +119,7 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
                 i16 erase_count = std::abs(selection_cursor_index - cursor_index);
                 user_input.erase(erase_index, erase_count);
                 cursor_index = erase_index; 
+                selection_cursor_index = cursor_index;
             }
 
             
@@ -136,6 +137,7 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
                 i16 erase_count = std::abs(selection_cursor_index - cursor_index);
                 user_input.erase(erase_index, erase_count);
                 cursor_index = erase_index;
+                selection_cursor_index = cursor_index;
             }
             
         }
@@ -162,12 +164,14 @@ void TextField::keyPressed(sf::Event::KeyEvent& e)
         }
         
 
-        // clamp cursor
-        if (cursor_index < 0) cursor_index = 0;
-        if (cursor_index > user_input.size()) cursor_index = i16( user_input.size() );
+        
 
         
 	}
+
+    // clamp cursor
+    if (cursor_index < 0) cursor_index = 0;
+    if (cursor_index > user_input.size()) cursor_index = i16(user_input.size());
 
     if (!e.shift) {
         selection_cursor_index = cursor_index;

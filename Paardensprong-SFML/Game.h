@@ -37,10 +37,13 @@ struct Game : public TextFieldListener {
     u32 game_round{ 0 };
     sf::Cursor hand_cursor, arrow_cursor;
 
-    f32 score_time_millis{ 0.0f };
+    bool show_avg_solve_time{ false };
     f32 solve_time{ 0.0f };
     std::vector<f32> solve_times = std::vector<f32>();
     f32 avg_solve_time{ 0.0f };
+
+
+    f32 score_time_millis{ 0.0f };
     i32 total_score{ 0 };
     const i32 max_word_score{ 30 };
     i32 word_score{ max_word_score };
@@ -96,16 +99,28 @@ struct Game : public TextFieldListener {
 
     }
 
+    bool cueue_reset{ false };
+
     void keyPressed(sf::Event::KeyEvent& e) {
         
         if (window != nullptr) {
             window->setMouseCursorVisible(false);
         }
 
+        if (e.alt) {
+            if (e.code == sf::Keyboard::T) {
+                show_avg_solve_time = !show_avg_solve_time;
+            }
+            return;
+        }
+
+        
+
         if (e.code == sf::Keyboard::Enter) {
             sound_bank["keyboard_enter_pressed.wav"].play();
             if (solved) {
-                reset();
+                cueue_reset = true;
+                //reset();
                 return;
             }
         }
@@ -141,7 +156,7 @@ struct Game : public TextFieldListener {
         if (solved) {
             bool inside = cell_grid.inBounds( (f32)e.x, (f32)e.y);
             if (inside) {
-                reset();
+                cueue_reset = true;
             }
         }
     }
@@ -241,6 +256,10 @@ struct Game : public TextFieldListener {
    
     void update(f32 dt) {
        
+        if (cueue_reset) {
+            cueue_reset = false;
+            reset();
+        }
 
         // update scores
         if (!solved) {
@@ -286,10 +305,15 @@ struct Game : public TextFieldListener {
        
     }
 
-   
+    void beginRender(sf::RenderWindow& window) {
+        window.clear();
+    }
+    void endRender(sf::RenderWindow& window) {
+        window.display();
+    }
 
     void render(sf::RenderWindow& window) {
-        window.clear();
+        
 
         {
             // draw white background
@@ -319,32 +343,29 @@ struct Game : public TextFieldListener {
 
 
         // render avg solve time
-        std::stringstream ss;
-        ss << std::fixed << std::setprecision(2) << (avg_solve_time / 1000.0f);
-        std::string mystring = ss.str();
-        std::string solve_time_str = ss.str();
-        sf::Text solve_time_text_shape = sf::Text(solve_time_str, score_font, score_text_size);
+        if (show_avg_solve_time) {
+            std::stringstream ss;
+            ss << std::fixed << std::setprecision(2) << (avg_solve_time / 1000.0f);
+            std::string mystring = ss.str();
+            std::string solve_time_str = ss.str();
+            sf::Text solve_time_text_shape = sf::Text(solve_time_str, score_font, score_text_size);
         
-        f32 solve_time_x = window.getSize().x - 48.0f;
-        f32 solve_time_y = 48.0f;
+            f32 solve_time_x = window.getSize().x - 48.0f;
+            f32 solve_time_y = 48.0f;
 
-        sf::FloatRect bounds = solve_time_text_shape.getLocalBounds();
-        f32 origin_x = bounds.left + bounds.width;
-        f32 origin_y = solve_time_text_shape.getOrigin().y;
+            sf::FloatRect bounds = solve_time_text_shape.getLocalBounds();
+            f32 origin_x = bounds.left + bounds.width;
+            f32 origin_y = solve_time_text_shape.getOrigin().y;
 
-        solve_time_text_shape.setOrigin(origin_x, origin_y);
-        solve_time_text_shape.setPosition({ solve_time_x, solve_time_y });
+            solve_time_text_shape.setOrigin(origin_x, origin_y);
+            solve_time_text_shape.setPosition({ solve_time_x, solve_time_y });
         
 
-        solve_time_text_shape.setFillColor(util::getTextColor());
-        window.draw(solve_time_text_shape);
+            solve_time_text_shape.setFillColor(util::getTextColor());
+            window.draw(solve_time_text_shape);
+        }
 
-
-
-
-
-
-        window.display();
+       
     }
 
 
