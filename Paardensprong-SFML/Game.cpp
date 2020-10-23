@@ -15,16 +15,33 @@ Game::Game() {
 }
 
 void Game::addSound(std::string url) {
-    sound_bank.insert({ url, LoadedSound() });
-    sound_bank[url].load(url);
+    if (!sound_bank.count(url)) {
+        sound_bank.insert({ url, LoadedSound() });
+        if (!sound_bank[url].load(url)) {
+            sound_bank.erase(url);
+        }
+    }
 }
 
 void Game::playSound(std::string url) {
+    bool success = false;
     if (!sound_bank.count(url)) {
         sound_bank.insert({ url, LoadedSound() });
-        sound_bank[url].load(url);
+        if (sound_bank[url].load(url)) {
+            success = true;
+        }
+        else {
+            sound_bank.erase(url);
+            success = false;
+        }
     }
-    sound_bank[url].play();
+    else {
+        success = true;
+    }
+
+    if (success) {
+        sound_bank[url].play();
+    }
 }
 
 

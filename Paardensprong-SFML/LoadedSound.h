@@ -6,15 +6,16 @@ struct LoadedSound {
     std::string name;
     sf::SoundBuffer buffer;
     sf::Sound sound;
+    
 
-
-    void load(std::string url) {
+    bool load(std::string url) {
         if (buffer.loadFromFile("assets/sound/" + url)) {
             name = url;
             sound = sf::Sound(buffer);
+            return true;
         }
         else {
-            name = "unloaded";
+            return false;
         }
     }
 
