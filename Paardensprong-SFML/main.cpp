@@ -7,8 +7,6 @@
 #include "Game.h"
 
 
-#define eol "\n"
-
 
 
 int main()

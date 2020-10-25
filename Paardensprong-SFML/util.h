@@ -29,6 +29,8 @@
 #define Megabytes(Value) (Kilobytes(Value) * 1024)
 #define Gigabytes(Value) (Megabytes(Value) * 1024)
 
+#define eol "\n"
+
 typedef uint64_t u64;
 typedef uint32_t u32;
 typedef uint16_t u16;
@@ -44,7 +46,6 @@ typedef double f64;
 
 #define PI 3.14159265358979323846
 
-#define eol "\n"
 
 namespace util {
     static void toUpperCase(std::string& str) {
