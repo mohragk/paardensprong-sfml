@@ -8,6 +8,7 @@
 #include "Cell.h"
 #include "LoadedSound.h"
 
+// pre-declare Game for circular dependency..
 struct Game;
 
 struct CellGrid {
@@ -27,8 +28,9 @@ struct CellGrid {
     f32 reveal_duration{ 0.0f };
     u32 reveal_order_index{ 0 };
 
+    CellGrid(Game &gm);
 
-    Game* game;
+    Game &game;
 
     
 

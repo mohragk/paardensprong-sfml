@@ -5,6 +5,8 @@
 
 
 
+CellGrid::CellGrid(Game& gm) : game(gm) {}
+
 
 u16 CellGrid::getGridIndexForLetterIndex(u16 letter_index)
 {
@@ -75,9 +77,9 @@ void CellGrid::update(f32 dt)
             grid[grid_index].reveal(0.5f);
 
 
-            if (game != nullptr) {
+            if (&game != nullptr) {
                 std::string num = std::to_string(util::getRandomIndex(4) + 1);
-                game->playSound("horse_gallop_0"+num+".wav");
+                game.playSound("horse_gallop_0"+num+".wav");
             }
         }
     }

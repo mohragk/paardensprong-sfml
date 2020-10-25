@@ -2,7 +2,7 @@
 
 #include "Game.h"
 
-Game::Game() {
+Game::Game(sf::RenderWindow &win) : window(win) {
    
     word_list = retrieveWordlist();
     shuffleWordlist(word_list);
@@ -53,9 +53,9 @@ void Game::reset() {
 
 
     paardensprong = generatePaardenSprong(word_list[word_index++]);
-    cell_grid = CellGrid();
-    cell_grid.game = this;
-    cell_grid.setupGrid(paardensprong.letters);
+    cell_grid = new CellGrid(*this);
+    
+    cell_grid->setupGrid(paardensprong.letters);
 
     user_input_field.disable(false);
     user_input_field.reset();
@@ -64,8 +64,8 @@ void Game::reset() {
 
 void Game::keyPressed(sf::Event::KeyEvent& e) {
 
-    if (window != nullptr) {
-        window->setMouseCursorVisible(false);
+    if (&window != nullptr) {
+        window.setMouseCursorVisible(false);
     }
 
     if (e.alt) {
@@ -106,16 +106,16 @@ void Game::keyReleased(sf::Event::KeyEvent& e) {
 
 
 void Game::mouseMoved(sf::Event::MouseMoveEvent& e) {
-    if (window != nullptr) {
-        window->setMouseCursorVisible(true);
+    if (&window != nullptr) {
+        window.setMouseCursorVisible(true);
         sf::Cursor* cursor = getMouseCursorForPosition((f32)e.x, (f32)e.y);
-        window->setMouseCursor(*cursor);
+        window.setMouseCursor(*cursor);
     }
 }
 
 void Game::mousePressed(sf::Event::MouseButtonEvent& e) {
     if (solved) {
-        bool inside = cell_grid.inBounds((f32)e.x, (f32)e.y);
+        bool inside = cell_grid->inBounds((f32)e.x, (f32)e.y);
         if (inside) {
             cueue_reset = true;
         }
@@ -123,7 +123,7 @@ void Game::mousePressed(sf::Event::MouseButtonEvent& e) {
 }
 
 sf::Cursor* Game::getMouseCursorForPosition(f32 mouse_x, f32 mouse_y) {
-    bool inside = cell_grid.inBounds(mouse_x, mouse_y);
+    bool inside = cell_grid->inBounds(mouse_x, mouse_y);
     if (inside) {
         return &hand_cursor;
     }
@@ -202,7 +202,7 @@ void Game::handleWinState() {
         solve_time = 0.0f;
 
         user_input_field.disable(true);
-        cell_grid.reveal(0.6f, paardensprong.reveal_order);
+        cell_grid->reveal(0.6f, paardensprong.reveal_order);
 
         playSound("counter_bell.wav");
     }
@@ -246,22 +246,22 @@ void Game::update(f32 dt) {
     }
 
     // update grid
-    cell_grid.update(dt);
-    cell_grid.updateWordScore(word_score);
+    cell_grid->update(dt);
+    cell_grid->updateWordScore(word_score);
     f32 grid_size = (f32)std::min(window_dim_y / 2, window_dim_x / 2);
-    cell_grid.resize(grid_size);
+    cell_grid->resize(grid_size);
 
-    f32 grid_x = window_dim_x / 2.0f - cell_grid.size / 2.0f;
+    f32 grid_x = window_dim_x / 2.0f - cell_grid->size / 2.0f;
     f32 grid_y = 0.05f * window_dim_y;
-    cell_grid.position(grid_x, grid_y);
+    cell_grid->position(grid_x, grid_y);
 
 
     // update user input field
 
-    f32 user_input_x = cell_grid.x + cell_grid.grid[0].border_width;
-    f32 user_input_y = cell_grid.y + cell_grid.size + 48;
+    f32 user_input_x = cell_grid->x + cell_grid->grid[0].border_width;
+    f32 user_input_y = cell_grid->y + cell_grid->size + 48;
     user_input_field.position(user_input_x, user_input_y);
-    u32 user_input_text_size = u32(cell_grid.size / 6);
+    u32 user_input_text_size = u32(cell_grid->size / 6);
     user_input_field.resizeText(user_input_text_size);
     user_input_field.update(dt);
 
@@ -283,14 +283,14 @@ void Game::render(sf::RenderWindow& window) {
 
 
 
-    cell_grid.paint(window);
+    cell_grid->paint(window);
 
     user_input_field.paint(window);
 
 
     // render total score
     std::string score = std::to_string(total_score);
-    u32 score_text_size = u32(cell_grid.size / 6.0f);
+    u32 score_text_size = u32(cell_grid->size / 6.0f);
     sf::Text score_text = sf::Text(score, score_font, score_text_size);
     score_text.setFillColor(sf::Color(util::getTextColor()));
     score_text.setPosition(48, 48);

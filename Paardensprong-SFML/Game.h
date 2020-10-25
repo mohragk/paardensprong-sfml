@@ -6,14 +6,9 @@
 #include "TextField.h"
 #include "CellGrid.h"
 #include <SFML/Audio.hpp>
-#include <unordered_map>
 #include "LoadedSound.h"
 
-struct PaardensprongData {
-    std::string solution;
-    std::string letters[9];
-    std::vector<u16> reveal_order = std::vector<u16>(9);
-};
+
 
 
 
@@ -22,11 +17,11 @@ struct Game : public TextFieldListener {
     u16 window_dim_x{ 800 };
     u16 window_dim_y{ 600 };
 
-    sf::RenderWindow* window;
+    sf::RenderWindow &window;
     
     std::unordered_map<std::string, LoadedSound> sound_bank;
 
-    CellGrid cell_grid;
+    CellGrid *cell_grid;
     TextField user_input_field;
     PaardensprongData paardensprong;
     
@@ -50,7 +45,10 @@ struct Game : public TextFieldListener {
     sf::Font score_font{ util::getDefaultFont() };
     bool cueue_reset{ false };
       
-    Game();
+    Game(sf::RenderWindow &win);
+    ~Game() {
+        delete cell_grid;
+    }
 
     void addSound(std::string url);
     void playSound(std::string url);
@@ -75,8 +73,6 @@ struct Game : public TextFieldListener {
     void handleWinState();
 
     void actionPerformed(const std::string& message) override;
-
-
    
     void update(f32 dt);
 

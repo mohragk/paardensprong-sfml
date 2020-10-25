@@ -10,11 +10,19 @@
 #include <iomanip>
 #include <regex>
 #include <string>
+
 #include <vector>
+#include <unordered_map>
 
 #include <algorithm>
 #include <random>
 #include <chrono>
+
+
+
+#define Kilobytes(Value) ((Value) * 1024)
+#define Megabytes(Value) (Kilobytes(Value) * 1024)
+#define Gigabytes(Value) (Megabytes(Value) * 1024)
 
 typedef uint64_t u64;
 typedef uint32_t u32;
@@ -24,12 +32,14 @@ typedef uint8_t u8;
 typedef int64_t i64;
 typedef int32_t i32;
 typedef int16_t i16;
+typedef int8_t i8;
 
 typedef float f32;
 typedef double f64;
 
 #define PI 3.14159265358979323846
 
+#define eol "\n"
 
 namespace util {
     static void toUpperCase(std::string& str) {
