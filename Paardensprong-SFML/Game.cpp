@@ -2,14 +2,11 @@
 
 #include "Game.h"
 
-Game::Game(sf::RenderWindow &win) : window(win) {
+Game::Game() {
    
     word_list = retrieveWordlist();
     shuffleWordlist(word_list);
     user_input_field.addListener(this);
-
-    hand_cursor.loadFromSystem(sf::Cursor::Hand);
-    arrow_cursor.loadFromSystem(sf::Cursor::Arrow);
 
     reset();
 }
@@ -64,9 +61,9 @@ void Game::reset() {
 
 void Game::keyPressed(sf::Event::KeyEvent& e) {
 
-    if (&window != nullptr) {
-        window.setMouseCursorVisible(false);
-    }
+    
+    mouse_cursor_visible = false;
+    
 
     if (e.alt) {
         if (e.code == sf::Keyboard::T) {
@@ -106,11 +103,9 @@ void Game::keyReleased(sf::Event::KeyEvent& e) {
 
 
 void Game::mouseMoved(sf::Event::MouseMoveEvent& e) {
-    if (&window != nullptr) {
-        window.setMouseCursorVisible(true);
-        sf::Cursor* cursor = getMouseCursorForPosition((f32)e.x, (f32)e.y);
-        window.setMouseCursor(*cursor);
-    }
+    
+    mouse_cursor_visible = true;
+    
 }
 
 void Game::mousePressed(sf::Event::MouseButtonEvent& e) {
@@ -122,15 +117,6 @@ void Game::mousePressed(sf::Event::MouseButtonEvent& e) {
     }
 }
 
-sf::Cursor* Game::getMouseCursorForPosition(f32 mouse_x, f32 mouse_y) {
-    bool inside = cell_grid->inBounds(mouse_x, mouse_y);
-    if (inside) {
-        return &hand_cursor;
-    }
-    else {
-        return &arrow_cursor;
-    }
-}
 
 
 
@@ -271,6 +257,7 @@ void Game::update(f32 dt) {
 
 void Game::render(sf::RenderWindow& window) {
 
+    
 
     {
         // draw white background

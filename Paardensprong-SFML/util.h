@@ -18,6 +18,11 @@
 #include <random>
 #include <chrono>
 
+#if NDEBUG
+    #define assert( Expression )
+#else
+    #define assert( Expression ) if (!Expression) {* (int *) 0 = 0;}
+#endif
 
 
 #define Kilobytes(Value) ((Value) * 1024)

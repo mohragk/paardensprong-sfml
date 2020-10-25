@@ -10,14 +10,16 @@
 
 
 
-
-
+struct PaardensprongData {
+    std::string solution;
+    std::string letters[9];
+    std::vector<u16> reveal_order = std::vector<u16>(9);
+};
 
 struct Game : public TextFieldListener {
     u16 window_dim_x{ 800 };
     u16 window_dim_y{ 600 };
 
-    sf::RenderWindow &window;
     
     std::unordered_map<std::string, LoadedSound> sound_bank;
 
@@ -30,7 +32,7 @@ struct Game : public TextFieldListener {
 
     bool solved{ false };
     u32 game_round{ 0 };
-    sf::Cursor hand_cursor, arrow_cursor;
+    
 
     bool show_avg_solve_time{ false };
     f32 solve_time{ 0.0f };
@@ -44,8 +46,10 @@ struct Game : public TextFieldListener {
     i32 word_score{ max_word_score };
     sf::Font score_font{ util::getDefaultFont() };
     bool cueue_reset{ false };
+
+    bool mouse_cursor_visible{ true };
       
-    Game(sf::RenderWindow &win);
+    Game();
     ~Game() {
         delete cell_grid;
     }
@@ -63,10 +67,10 @@ struct Game : public TextFieldListener {
     void mousePressed(sf::Event::MouseButtonEvent& e);
 
    
-    sf::Cursor* getMouseCursorForPosition(f32 mouse_x, f32 mouse_y);
-    
     PaardensprongData generatePaardenSprong(std::string word);
+    
     std::vector<std::string> retrieveWordlist();
+
     void shuffleWordlist(std::vector<std::string>& list);
 
 
