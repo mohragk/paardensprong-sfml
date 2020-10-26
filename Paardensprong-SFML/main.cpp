@@ -65,6 +65,10 @@ int main()
                 window_width = window.getSize().x;
                 window_height = window.getSize().y;
             }
+            else if (event.type == sf::Event::GainedFocus)
+                game->user_input_field.in_focus = true;
+            else if (event.type == sf::Event::LostFocus)
+                game->user_input_field.in_focus = false;
             else if (event.type == sf::Event::MouseMoved) {
                 bool inside_cell = game->cell_grid->inBounds((f32)event.mouseMove.x, (f32)event.mouseMove.y);
                 if (inside_cell) {

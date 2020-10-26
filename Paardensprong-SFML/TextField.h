@@ -32,6 +32,7 @@ struct TextField {
 
 	bool disabled{ false };
 	bool selecting{ false };
+	bool in_focus{ true };
 
 	void position(f32 new_x, f32 new_y) {
 		x = new_x;

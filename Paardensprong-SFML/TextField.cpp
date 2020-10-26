@@ -58,7 +58,7 @@ void TextField::paint(sf::RenderWindow& window)
     }
 
 
-    if (!disabled) {
+    if (!disabled && in_focus) {
         // draw cursor
         sf::RectangleShape cursor_rect = sf::RectangleShape({ 2.0f, (f32)text_size });
         

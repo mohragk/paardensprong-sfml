@@ -48,6 +48,8 @@ struct Game : public TextFieldListener {
     bool cueue_reset{ false };
 
     bool mouse_cursor_visible{ true };
+    bool is_in_focus{ true };
+
       
     Game();
     ~Game() {
@@ -86,6 +88,8 @@ struct Game : public TextFieldListener {
     void endRender(sf::RenderWindow& window) {
         window.display();
     }
+
+    
 
     void render(sf::RenderWindow& window);
 
