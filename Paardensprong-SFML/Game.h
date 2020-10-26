@@ -61,6 +61,10 @@ struct Game : public TextFieldListener {
     
     void reset();
 
+    void gainedFocus(bool in_focus) {
+        is_in_focus = in_focus;
+        user_input_field.in_focus = in_focus;
+    }
 
     void keyPressed(sf::Event::KeyEvent& e);
     void keyReleased(sf::Event::KeyEvent& e);
