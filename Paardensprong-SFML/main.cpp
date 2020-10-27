@@ -1,9 +1,72 @@
-
-#include <SFML/OpenGL.hpp>
-
 #include "util.h"
 
+struct Memory {
+    bool is_initialized;
+    u64 storage_size;
+    void* storage;
+};
 
+struct Cell {
+    f32 x,y;
+    f32 size;
+};
+
+struct GameState {
+    std::string text;
+    Cell* cells[];
+};
+
+
+
+
+static void gameUpdateAndRender(Memory* memory, sf::RenderWindow* window, f32 dt) {
+   
+    // draw white background
+    {
+        sf::RectangleShape bg_rect = sf::RectangleShape({ (f32)window->getSize().x, (f32)window->getSize().y });
+        bg_rect.setFillColor(sf::Color::White);
+        window->draw(bg_rect);
+    }
+    
+    GameState* game_state = (GameState*)memory->storage;
+    u16 max_cells = 9;
+
+
+    if (!memory->is_initialized) {
+
+        memory->is_initialized = true;
+        
+        // initialize cells
+        for (i16 cell_index = 0; cell_index < max_cells; cell_index++) {
+            Cell* cell = (Cell*)memory->storage + sizeof(GameState) + (cell_index * sizeof(cell));
+            game_state->cells[cell_index] = cell;
+            cell->x = 12.0f;
+            cell->y = 98.0f *cell_index;
+            cell->size = 96.0f;
+        }
+        
+    }
+
+    for (u16 cell_index = 0; cell_index < max_cells; cell_index++) {
+        Cell* cell = game_state->cells[cell_index];
+        cell->x += 40.0f * (dt / 1000.0f);
+        if (cell->x > window->getSize().x)
+            cell->x = -cell->size;
+
+        sf::RectangleShape rect = sf::RectangleShape({ cell->size, cell->size });
+        rect.setPosition(cell->x, cell->y);
+        rect.setFillColor(sf::Color::Magenta);
+        window->draw(rect);
+    }
+
+
+    
+
+   
+       
+      
+   
+}
 
 int main()
 {
@@ -31,17 +94,15 @@ int main()
     i16 prev_window_pos_x = window.getPosition().x;
     i16 prev_window_pos_y = window.getPosition().y;
 
-    // create the game
-    Game *game = new Game();
-
     
 
     sf::Clock clock;
     sf::Time prev_time;
   
-    sf::Cursor hand_cursor, arrow_cursor;
-    hand_cursor.loadFromSystem(sf::Cursor::Hand);
-    arrow_cursor.loadFromSystem(sf::Cursor::Arrow);
+    Memory memory = {};
+    memory.storage_size = Megabytes(128);
+    memory.storage = VirtualAlloc(0, memory.storage_size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+
 
     // main "loop"
     while (window.isOpen())
@@ -61,80 +122,20 @@ int main()
                 window_width = window.getSize().x;
                 window_height = window.getSize().y;
             }
-            else if (event.type == sf::Event::MouseMoved) {
-                bool inside_cell = game->cell_grid->inBounds((f32)event.mouseMove.x, (f32)event.mouseMove.y);
-                if (inside_cell) {
-                    window.setMouseCursor(hand_cursor);
-                }
-                else {
-                    window.setMouseCursor(arrow_cursor);
-                }
-
-                game->mouseMoved(event.mouseMove);
-            }
-            else if (event.type == sf::Event::MouseButtonPressed) {
-                game->mousePressed(event.mouseButton);
-            }
-            else if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Escape) {
-                    window.close();
-                    delete game;
-                    return 0;
-                }
-
-                else if (event.key.code == sf::Keyboard::F11) {
-                    is_fullscreen = !is_fullscreen;
-                    if (is_fullscreen) {
-
-                        prev_window_width = window.getSize().x;
-                        prev_window_height = window.getSize().y;
-                        prev_window_pos_x = window.getPosition().x;
-                        prev_window_pos_y = window.getPosition().y;
-
-                        window.create(sf::VideoMode::getDesktopMode(), window_title, sf::Style::None, context_settings);
-                        window.setPosition({ 0,0 });
-                       
-                    }
-                    else {
-                        
-                        window.create(sf::VideoMode(prev_window_width, prev_window_height), window_title, sf::Style::Titlebar | sf::Style::Close, context_settings);
-                        window.setPosition(sf::Vector2i(prev_window_pos_x < 0 ? 0 : prev_window_pos_x, prev_window_pos_y < 0 ? 0 : prev_window_pos_y));
-                    }
-                    window_width = window.getSize().x;
-                    window_height = window.getSize().y;
-
-                }
-
-                else {
-                    game->keyPressed(event.key);
-                }
-            }
-            else if (event.type == sf::Event::KeyReleased) {
-                game->keyReleased(event.key);
-            }
-                
+           
         }
 
-        window.setMouseCursorVisible(game->mouse_cursor_visible);
-
-        // main game update and render "loop"
-        game->window_dim_x = window_width;
-        game->window_dim_y = window_height;
-
+        window.clear();
+        
         sf::Time now = clock.getElapsedTime();
         f32 dt = (now.asMicroseconds() - prev_time.asMicroseconds()) / 1000.0f;
         prev_time = now;
-       
+        gameUpdateAndRender(&memory, &window, dt);
 
-        game->update(dt);
-        game->beginRender(window);
-        game->render(window);
-        game->endRender(window);
+        window.display();
        
-        
        
     }
 
-    delete game;
     return 0;
 }
