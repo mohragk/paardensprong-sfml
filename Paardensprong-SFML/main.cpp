@@ -1,5 +1,9 @@
 #include "util.h"
 
+struct SFMLData {
+    sf::Font default_font;
+};
+
 struct Memory {
     bool is_initialized;
     u64 storage_size;
@@ -16,9 +20,12 @@ struct Cell {
 struct GameState {
     static constexpr u16 max_cells{9};
     Cell cells[max_cells];
+
+    f32 grid_x, grid_y;
+    f32 grid_dimension;
 };
 
-static void initializeCells(GameState* game_state, Memory* memory, sf::Font *font) {
+static void initializeCells(GameState* game_state, sf::Font *font) {
 
     // initialize cells
     for (i16 cell_index = 0; cell_index < game_state->max_cells; cell_index++) {
@@ -54,7 +61,7 @@ static void drawCell(Cell* cell, sf::RenderWindow *window, GameState * game_stat
 }
 
 
-static void gameUpdateAndRender(Memory* memory, sf::RenderWindow* window, f32 dt, sf::Font *font) {
+static void gameUpdateAndRender(Memory* memory, sf::RenderWindow* window, f32 dt, SFMLData *sfml_data) {
    
     // draw white background
     {
@@ -69,25 +76,34 @@ static void gameUpdateAndRender(Memory* memory, sf::RenderWindow* window, f32 dt
 
 
     if (!memory->is_initialized) {
+        memory->is_initialized = true;   
 
-        memory->is_initialized = true;
-       
-        initializeCells(game_state, memory, font);
         
+
+        initializeCells(game_state, &sfml_data->default_font);
+        game_state->grid_x = 48.0f;
+        game_state->grid_y = 48.0f;
+        game_state->grid_dimension = 3.0f;
     }
 
 
     // Draw cells
-    for (u16 cell_index = 0; cell_index < max_cells; cell_index++) {
-        Cell* cell = &game_state->cells[cell_index];
-        cell->x += 40.0f * (dt / 1000.0f);
-        if (cell->x > window->getSize().x)
-            cell->x = -cell->size;
+    f32 grid_x = game_state->grid_x;
+    f32 grid_y = game_state->grid_y;
+    f32 grid_dimension = game_state->grid_dimension;
+    f32 cell_size = game_state->cells[0].size;
+    u16 cell_index = 0;
+    for (f32 cell_y = grid_y; cell_y < grid_y + (grid_dimension * cell_size); cell_y += cell_size) {
+        for (f32 cell_x = grid_x; cell_x < grid_x + (grid_dimension * cell_size); cell_x += cell_size) {
 
+            Cell* cell = &game_state->cells[cell_index];
+            cell->x = cell_x;
+            cell->y = cell_y;
 
-        drawCell(cell, window, game_state);
+            drawCell(cell, window, game_state);
+            cell_index++;
+        }
     }
-   
 }
 
 int main()
@@ -121,7 +137,8 @@ int main()
     sf::Clock clock;
     sf::Time prev_time;
   
-    sf::Font default_font{ getDefaultFont() };
+    SFMLData sfml_data = {};
+    sfml_data.default_font = getDefaultFont() ;
 
     Memory memory = {};
     memory.storage_size = Megabytes(128);
@@ -154,7 +171,7 @@ int main()
         sf::Time now = clock.getElapsedTime();
         f32 dt = (now.asMicroseconds() - prev_time.asMicroseconds()) / 1000.0f;
         prev_time = now;
-        gameUpdateAndRender(&memory, &window, dt, &default_font);
+        gameUpdateAndRender(&memory, &window, dt, &sfml_data);
 
         window.display();
        
