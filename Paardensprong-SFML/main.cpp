@@ -1,11 +1,7 @@
 
 #include <SFML/OpenGL.hpp>
-#include <iostream>
-#include <cstdlib>
-#include <ctime>   
 
-#include "Game.h"
-
+#include "util.h"
 
 
 
