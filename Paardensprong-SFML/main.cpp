@@ -18,11 +18,14 @@ struct Cell {
 };
 
 struct GameState {
+
     static constexpr u16 max_cells{9};
     Cell cells[max_cells];
 
     f32 grid_x, grid_y;
     f32 grid_dimension;
+
+    u32 game_round;
 };
 
 static void initializeCells(GameState* game_state, sf::Font *font) {
@@ -63,27 +66,29 @@ static void drawCell(Cell* cell, sf::RenderWindow *window, GameState * game_stat
 
 static void gameUpdateAndRender(Memory* memory, sf::RenderWindow* window, f32 dt, SFMLData *sfml_data) {
    
-    // draw white background
-    {
-        sf::RectangleShape bg_rect = sf::RectangleShape({ (f32)window->getSize().x, (f32)window->getSize().y });
-        bg_rect.setFillColor(sf::Color::White);
-        window->draw(bg_rect);
-    }
-    
     GameState* game_state = (GameState*)memory->storage;
     u16 max_cells = 9;
-
 
 
     if (!memory->is_initialized) {
         memory->is_initialized = true;   
 
         
-
         initializeCells(game_state, &sfml_data->default_font);
         game_state->grid_x = 48.0f;
         game_state->grid_y = 48.0f;
         game_state->grid_dimension = 3.0f;
+
+        game_state->game_round = 0;
+    }
+
+
+
+    // draw white background
+    {
+        sf::RectangleShape bg_rect = sf::RectangleShape({ (f32)window->getSize().x, (f32)window->getSize().y });
+        bg_rect.setFillColor(sf::Color::White);
+        window->draw(bg_rect);
     }
 
 
@@ -99,6 +104,7 @@ static void gameUpdateAndRender(Memory* memory, sf::RenderWindow* window, f32 dt
             Cell* cell = &game_state->cells[cell_index];
             cell->x = cell_x;
             cell->y = cell_y;
+           
 
             drawCell(cell, window, game_state);
             cell_index++;
