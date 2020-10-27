@@ -9,14 +9,28 @@ struct Memory {
 struct Cell {
     f32 x,y;
     f32 size;
+
+    char letter;
 };
 
 struct GameState {
-    std::string text;
-    Cell* cells[];
+    static constexpr u16 max_cells{9};
+    Cell cells[max_cells];
 };
 
+static void initializeCells(GameState* game_state, Memory* memory) {
 
+    // initialize cells
+    for (i16 cell_index = 0; cell_index < game_state->max_cells; cell_index++) {
+        Cell cell = {};
+        cell.x = 12.0f;
+        cell.y = 98.0f * cell_index;
+        cell.size = 96.0f;
+        cell.letter = 'A';
+        game_state->cells[cell_index] = cell;
+        
+    }
+}
 
 
 static void gameUpdateAndRender(Memory* memory, sf::RenderWindow* window, f32 dt) {
@@ -32,23 +46,20 @@ static void gameUpdateAndRender(Memory* memory, sf::RenderWindow* window, f32 dt
     u16 max_cells = 9;
 
 
+
     if (!memory->is_initialized) {
 
         memory->is_initialized = true;
-        
-        // initialize cells
-        for (i16 cell_index = 0; cell_index < max_cells; cell_index++) {
-            Cell* cell = (Cell*)memory->storage + sizeof(GameState) + (cell_index * sizeof(cell));
-            game_state->cells[cell_index] = cell;
-            cell->x = 12.0f;
-            cell->y = 98.0f *cell_index;
-            cell->size = 96.0f;
-        }
+    
+        initializeCells(game_state, memory);
         
     }
 
+    sf::Font default_font = getDefaultFont();
+
+    // Draw cells
     for (u16 cell_index = 0; cell_index < max_cells; cell_index++) {
-        Cell* cell = game_state->cells[cell_index];
+        Cell* cell = &game_state->cells[cell_index];
         cell->x += 40.0f * (dt / 1000.0f);
         if (cell->x > window->getSize().x)
             cell->x = -cell->size;
@@ -57,14 +68,12 @@ static void gameUpdateAndRender(Memory* memory, sf::RenderWindow* window, f32 dt
         rect.setPosition(cell->x, cell->y);
         rect.setFillColor(sf::Color::Magenta);
         window->draw(rect);
+
+        sf::Text letter_shape = sf::Text(cell->letter, default_font, 34.0f);
+        letter_shape.setPosition(cell->x, cell->y);
+        letter_shape.setFillColor(sf::Color::Black);
+        window->draw(letter_shape);
     }
-
-
-    
-
-   
-       
-      
    
 }
 

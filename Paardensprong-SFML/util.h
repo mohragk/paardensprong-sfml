@@ -29,3 +29,10 @@ typedef float		f32;
 #define Megabytes(Value) (Kilobytes(Value) * 1024)
 #define Gigabytes(Value) (Megabytes(Value) * 1024)
 
+static sf::Font getDefaultFont() {
+    sf::Font default_font;
+    default_font.loadFromFile("assets/arialbd.ttf");
+
+    return default_font;
+}
+
